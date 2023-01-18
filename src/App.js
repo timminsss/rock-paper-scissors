@@ -6,106 +6,104 @@ import GamePlay from './components/game-play.jsx';
 import GameOutcome from './components/game-outcome.jsx';
 import Choices from './components/choices.jsx';
 
-const choices = [ 'rock', 'paper', 'scissors']
+// const choices = [ 'rock', 'paper', 'scissors']
+const Actions = {
+  Rock: 'rock',
+  Paper: 'paper',
+  Scissors: 'scissors',
+  Unselected: ''
+}
+const plays = [ Actions.Paper, Actions.Rock, Actions.Scissors]
 
 const App = () => {
-  let [game, setGame] = useState({
-    choice: '',
-    compChoice: '',
-    total: 0,
-    winner: ''
-  });
+
+  const [choices, setChoices] = useState({
+    player: Actions.Unselected,
+    comp: Actions.Unselected});
+  const [total, setTotal] = useState(0);
+  const [winner, setWinner] = useState();
 
   const houseChoice = () => {
-    return choices[Math.floor(Math.random() * 3)];
+    return plays[Math.floor(Math.random() * 3)];
   }
 
   const whoWins = (choice, computerChoice) => {
-    if ((choice === 'rock' && computerChoice === 'scissors') ||
-      (choice === 'paper' && computerChoice === 'rock') ||
-      (choice === 'scissors' && computerChoice === 'paper'))
-      {
-        return true
-      } else {
-        return false
-      }
+    const winningCombinations = [[Actions.Rock, Actions.Scissors], [Actions.Paper, Actions.Rock], [Actions.Scissors, Actions.Paper]]
+    setChoices({
+      player: choice,
+      comp: computerChoice
+    });
+    if (choice === computerChoice) {
+      return ("IT'S A DRAW!")
+    } else if (winningCombinations.some(i => i.toString() === [choice, computerChoice].toString())) {
+      setTotal(total + 1);
+      return ("YOU WIN 🥳")
+    } else {
+      return ("YOU LOSE 😭")
+    }
   }
 
-  const rockHandler = (e) => {
+  const rockHandler = () => {
     const computerChoice = houseChoice()
-    const score = whoWins('rock', computerChoice) ? game.total + 1 : game.total
-    const winner = whoWins('rock', computerChoice) ? 'YOU WIN 🥳' : 'YOU LOSE 😭'
-    setGame({
-      ...game,
-      choice: 'rock',
-      compChoice: computerChoice,
-      total: score,
-      winner: winner
-    })
-
+    setWinner(whoWins(Actions.Rock, computerChoice));
   }
 
-  const paperHandler = (e) => {
+  const paperHandler = () => {
     const computerChoice = houseChoice()
-    const score = whoWins('paper', computerChoice) ? game.total + 1 : game.total
-    const winner = whoWins('paper', computerChoice) ? 'YOU WIN 🥳' : 'YOU LOSE 😭'
-    setGame({
-      ...game,
-      choice: 'paper',
-      compChoice: computerChoice,
-      total: score,
-      winner: winner
-    })
+    setWinner(whoWins(Actions.Paper, computerChoice));
   }
-  const scissorsHandler = (e) => {
+  const scissorsHandler = () => {
     const computerChoice = houseChoice()
-    const score = whoWins('scissors', computerChoice) ? game.total + 1 : game.total
-    const winner = whoWins('scissors', computerChoice) ? 'YOU WIN 🥳' : 'YOU LOSE 😭'
-    setGame({
-      ...game,
-      choice: 'scissors',
-      compChoice: computerChoice,
-      total: score,
-      winner: winner
-    })
+    setWinner(whoWins(Actions.Scissors, computerChoice));
   }
 
-  const playAgainHandler = (e) => {
-    setGame({
-      ...game,
-      choice: '',
-      compChoice: '',
-      winner: ''
-    })
+  const handleChoice = (playerChoice) => {
+    const computerChoice = houseChoice()
+    console.log(`player choice ${playerChoice}`)
+    console.log(`comp choice ${computerChoice}`)
+    setWinner(whoWins(playerChoice, computerChoice));
   }
 
-  const resetHandler = (e) => {
-    setGame({
-      ...game,
-      choice: '',
-      compChoice: '',
-      total: 0,
-      winner: ''
-    })
+  const playAgainHandler = () => {
+    setChoices({
+      player: Actions.Unselected,
+      comp: Actions.Unselected
+    });
+    setWinner();
+  }
+
+  const resetHandler = () => {
+    setChoices({
+      player: Actions.Unselected,
+      comp: Actions.Unselected
+    });
+    setTotal(0);
+    setWinner();
   }
 
   return (
     <div className="App">
-      <Score total={game.total} onClick={resetHandler}/>
+      <Score total={total} onClick={resetHandler}/>
       <GameWrapper>
         {
-          !game.choice ?
+          choices.player === '' ?
             <Choices> {
-              (choices.map((hand, index) => {
+              (plays.map((hand, index) => {
                   return (
                     <GamePlay
                       key={index}
                       choice={hand}
+                      // onClick={handleChoice(hand)}
+                      // onClick={
+                      //   hand === Actions.Rock ? handleChoice(Actions.Rock)
+                      //   : hand === Actions.Paper ? handleChoice(Actions.Paper)
+                      //   : handleChoice(Actions.Scissors)
+                      //  }
                       onClick={
-                        hand === 'rock' ? rockHandler
-                        : hand === 'paper' ? paperHandler
+                        hand === Actions.Rock ? rockHandler
+                        : hand === Actions.Paper ? paperHandler
                         : scissorsHandler
-                      }
+                       }
                     />
                   )
                 }))
@@ -113,9 +111,8 @@ const App = () => {
             </Choices>
             :
             <GameOutcome
-              choice={game.choice}
-              computerChoice={game.compChoice}
-              youWin={game.winner}
+              choicesState={choices}
+              youWin={winner}
               onClick={playAgainHandler}
             >
             </GameOutcome>
