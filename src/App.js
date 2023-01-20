@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import './App.css';
 import Score from './components/score.jsx'
-import GameWrapper from './components/game-wrapper.jsx'
-import GamePlay from './components/game-play.jsx';
-import GameOutcome from './components/game-outcome.jsx';
+import GameWrapper from './components/game-wrapper.jsx';
 import Choices from './components/choices.jsx';
+import Results from './components/results.jsx';
 
-// const choices = [ 'rock', 'paper', 'scissors']
 const Actions = {
   Rock: 'rock',
   Paper: 'paper',
@@ -43,25 +41,9 @@ const App = () => {
     }
   }
 
-  const rockHandler = () => {
+  const handleChoice = (hand) => {
     const computerChoice = houseChoice()
-    setWinner(whoWins(Actions.Rock, computerChoice));
-  }
-
-  const paperHandler = () => {
-    const computerChoice = houseChoice()
-    setWinner(whoWins(Actions.Paper, computerChoice));
-  }
-  const scissorsHandler = () => {
-    const computerChoice = houseChoice()
-    setWinner(whoWins(Actions.Scissors, computerChoice));
-  }
-
-  const handleChoice = (playerChoice) => {
-    const computerChoice = houseChoice()
-    console.log(`player choice ${playerChoice}`)
-    console.log(`comp choice ${computerChoice}`)
-    setWinner(whoWins(playerChoice, computerChoice));
+    setWinner(whoWins(hand, computerChoice));
   }
 
   const playAgainHandler = () => {
@@ -86,36 +68,17 @@ const App = () => {
       <Score total={total} onClick={resetHandler}/>
       <GameWrapper>
         {
-          choices.player === '' ?
-            <Choices> {
-              (plays.map((hand, index) => {
-                  return (
-                    <GamePlay
-                      key={index}
-                      choice={hand}
-                      // onClick={handleChoice(hand)}
-                      // onClick={
-                      //   hand === Actions.Rock ? handleChoice(Actions.Rock)
-                      //   : hand === Actions.Paper ? handleChoice(Actions.Paper)
-                      //   : handleChoice(Actions.Scissors)
-                      //  }
-                      onClick={
-                        hand === Actions.Rock ? rockHandler
-                        : hand === Actions.Paper ? paperHandler
-                        : scissorsHandler
-                       }
-                    />
-                  )
-                }))
-              }
-            </Choices>
-            :
-            <GameOutcome
-              choicesState={choices}
-              youWin={winner}
-              onClick={playAgainHandler}
-            >
-            </GameOutcome>
+          choices.player === Actions.Unselected ?
+            <Choices
+            plays={plays}
+            handleChoice={handleChoice}
+            />
+          :
+            <Results
+            winner={winner}
+            playAgainHandler={playAgainHandler}
+            choices={choices}
+            />
         }
       </ GameWrapper>
     </div>

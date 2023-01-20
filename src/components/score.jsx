@@ -1,7 +1,6 @@
-// import "../component-css/button.css";
 import logo from './images/logo.svg';
 
-const Score = ({ total, onClick }) => {
+const Score = ({ total, resetHandler }) => {
   return (
     <div>
       <div className="scoreboard w-75 mx-auto p-5 my-5 shadow rounded d-flex justify-content-between">
@@ -11,7 +10,7 @@ const Score = ({ total, onClick }) => {
           <p className="score my-auto fw-bolder">{total}</p>
         </div>
       </div>
-      <button onClick={onClick} className="btn btn-lg btn-light shadow fw-bolder h-50">RESET</button>
+      <button onClick={resetHandler} className="btn btn-lg btn-light shadow fw-bolder h-50">RESET</button>
     </div>
   );
 }
