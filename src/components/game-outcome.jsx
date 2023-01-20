@@ -20,7 +20,6 @@ const GameOutcome = ({ choicesState, youWin, onClick }) => {
             className={`${choicesState.comp} choice bg-light rounded-circle shadow p-5 m-5`}/>
         </div>
       </div>
-      <button onClick={onClick} className="btn btn-lg btn-dark shadow p-3 fw-bolder">PLAY AGAIN?</button>
     </div>
   );
 }

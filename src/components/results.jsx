@@ -1,4 +1,5 @@
 import GameOutcome from './game-outcome.jsx';
+import PlayAgain from './play-again.jsx';
 
 const results = ({ winner, playAgainHandler, choices }) => {
   return (
@@ -8,6 +9,7 @@ const results = ({ winner, playAgainHandler, choices }) => {
               youWin={winner}
               onClick={playAgainHandler}
       />
+      <PlayAgain onClick={playAgainHandler}/>
     </div>
   );
 }
